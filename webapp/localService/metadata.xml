@@ -1,0 +1,62 @@
+<edmx:Edmx
+    xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+    xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+    xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">
+    <edmx:Reference
+        xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Uri="./IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
+    </edmx:Reference>
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema
+            xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="ZC_CARRIER_CDS" xml:lang="de" sap:schema-version="1">
+            <EntityType Name="ZC_CarrierType" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="carrid"/>
+                </Key>
+                <Property Name="carrid" Type="Edm.String" Nullable="false" MaxLength="3" sap:display-format="UpperCase" sap:label="Fluggesellschaft" sap:quickinfo="Kurzbezeichnung der Fluggesellschaft"/>
+                <Property Name="carrname" Type="Edm.String" MaxLength="20" sap:label="Fluggesellschaft" sap:quickinfo="Name einer Fluggesellschaft"/>
+                <Property Name="currcode" Type="Edm.String" MaxLength="5" sap:label="Währ. d. Flugg." sap:quickinfo="Hauswährung der Fluggesellschaft" sap:semantics="currency-code"/>
+                <Property Name="url" Type="Edm.String" MaxLength="255" sap:label="URL" sap:quickinfo="URL einer Fluggesellschaft"/>
+                <NavigationProperty Name="to_Flight" Relationship="ZC_CARRIER_CDS.assoc_ED4F28253BA0F46E046E7FE955E27178" FromRole="FromRole_assoc_ED4F28253BA0F46E046E7FE955E27178" ToRole="ToRole_assoc_ED4F28253BA0F46E046E7FE955E27178"/>
+            </EntityType>
+            <EntityType Name="ZC_FlightType" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="carrid"/>
+                    <PropertyRef Name="connid"/>
+                </Key>
+                <Property Name="carrid" Type="Edm.String" Nullable="false" MaxLength="3" sap:display-format="UpperCase" sap:label="Fluggesellschaft" sap:quickinfo="Kurzbezeichnung der Fluggesellschaft"/>
+                <Property Name="connid" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="NonNegative" sap:label="Verbindungs-Nummer" sap:quickinfo="Code der Einzelflugverbindung"/>
+                <Property Name="countryfr" Type="Edm.String" MaxLength="3" sap:display-format="UpperCase" sap:label="Länderschlüssel"/>
+                <Property Name="countryto" Type="Edm.String" MaxLength="3" sap:display-format="UpperCase" sap:label="Länderschlüssel"/>
+                <Property Name="cityfrom" Type="Edm.String" MaxLength="20" sap:display-format="UpperCase" sap:label="Abflugstadt"/>
+                <Property Name="cityto" Type="Edm.String" MaxLength="20" sap:display-format="UpperCase" sap:label="Ankunftstadt"/>
+                <Property Name="distance" Type="Edm.Decimal" Precision="9" Scale="4" sap:label="Flugentfernung" sap:quickinfo="Entfernung"/>
+                <NavigationProperty Name="to_carrier" Relationship="ZC_CARRIER_CDS.assoc_ED4F28253BA0F46E046E7FE955E27178" FromRole="ToRole_assoc_ED4F28253BA0F46E046E7FE955E27178" ToRole="FromRole_assoc_ED4F28253BA0F46E046E7FE955E27178"/>
+            </EntityType>
+            <Association Name="assoc_ED4F28253BA0F46E046E7FE955E27178" sap:content-version="1">
+                <End Type="ZC_CARRIER_CDS.ZC_CarrierType" Multiplicity="1" Role="FromRole_assoc_ED4F28253BA0F46E046E7FE955E27178"/>
+                <End Type="ZC_CARRIER_CDS.ZC_FlightType" Multiplicity="*" Role="ToRole_assoc_ED4F28253BA0F46E046E7FE955E27178"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_assoc_ED4F28253BA0F46E046E7FE955E27178">
+                        <PropertyRef Name="carrid"/>
+                    </Principal>
+                    <Dependent Role="ToRole_assoc_ED4F28253BA0F46E046E7FE955E27178">
+                        <PropertyRef Name="carrid"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <EntityContainer Name="ZC_CARRIER_CDS_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="ZC_Carrier" EntityType="ZC_CARRIER_CDS.ZC_CarrierType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+                <EntitySet Name="ZC_Flight" EntityType="ZC_CARRIER_CDS.ZC_FlightType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+                <AssociationSet Name="assoc_ED4F28253BA0F46E046E7FE955E27178" Association="ZC_CARRIER_CDS.assoc_ED4F28253BA0F46E046E7FE955E27178" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ZC_Carrier" Role="FromRole_assoc_ED4F28253BA0F46E046E7FE955E27178"/>
+                    <End EntitySet="ZC_Flight" Role="ToRole_assoc_ED4F28253BA0F46E046E7FE955E27178"/>
+                </AssociationSet>
+            </EntityContainer>
+            <atom:link
+                xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="./sap/ZC_CARRIER_CDS/$metadata"/>
+                <atom:link
+                    xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="./sap/ZC_CARRIER_CDS/$metadata"/>
+                </Schema>
+            </edmx:DataServices>
+        </edmx:Edmx>
